@@ -1,0 +1,35 @@
+# ToolRet pilot config. Requires `scripts/download_toolret.py` to have been
+# run first (needs network + `pip install -e ".[data]"`). This is a
+# REDUCED-CATALOG pilot (catalog = tools from the same source subset as the
+# query), not the official ToolRet full-corpus evaluation -- see
+# docs/dataset.md section "Catalog scope".
+run_name: toolret_pilot
+dataset: toolret
+
+toolret:
+  raw_dir: data/raw/toolret
+  subsets:
+    - apibank
+    - apigen
+    - gorilla-huggingface
+    - toolalpaca
+    - metatool
+
+seed: 42
+
+pilot:
+  max_total_queries: 500
+  dev_frac: 0.6
+  val_frac: 0.2
+
+catalog:
+  n_distractors: 3
+
+embedding:
+  model_name: sentence-transformers/all-MiniLM-L6-v2
+  device: cpu
+
+thresholds:
+  max_risk: 0.1
+
+output_dir: results/toolret_pilot

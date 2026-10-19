@@ -1,0 +1,55 @@
+# Optional, local-only OpenSearch for future experimentation.
+#
+# NOT required for this milestone: the BM25 and embedding baselines run
+# entirely locally via rank_bm25 / sentence-transformers (see
+# src/tool_routing/retrieval/). No OpenSearch adapter is implemented yet --
+# see "Deferred: OpenSearch BM25 adapter" in README.md for why, and what a
+# future adapter would need to document (analyzer/scoring settings, and
+# that its scores are NOT comparable to local rank_bm25 scores).
+#
+# This compose file is provided only so a future adapter can be developed
+# against a real, local, disposable OpenSearch node. It is never started
+# automatically by any script or test in this repository.
+#
+# Usage (manual, local-only):
+#   docker compose -f docker-compose.opensearch.yml up -d
+#   curl http://localhost:9200            # should respond once healthy
+#   docker compose -f docker-compose.opensearch.yml down   # add -v to also
+#                                                           # delete the
+#                                                           # data volume
+#
+# Security note: this configuration disables the OpenSearch security
+# plugin and binds only to localhost. It is NOT safe for any shared,
+# multi-user, or production environment -- local research use only.
+# No credentials are embedded in this file.
+
+services:
+  opensearch:
+    image: opensearchproject/opensearch:2.17.1
+    container_name: tool-routing-opensearch
+    environment:
+      - discovery.type=single-node
+      - plugins.security.disabled=true
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - "127.0.0.1:9200:9200"
+      - "127.0.0.1:9600:9600"
+    volumes:
+      - tool-routing-opensearch-data:/usr/share/opensearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  tool-routing-opensearch-data:
+    name: tool-routing-opensearch-data

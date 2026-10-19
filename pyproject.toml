@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tool-routing"
+version = "0.1.0"
+description = "Reliable neural tool selection when available tools change: datasets, baselines, and evaluation (milestone 1)."
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+license = { text = "MIT" }
+
+dependencies = [
+    "numpy>=1.26,<2.4",
+    "pandas>=2.1,<2.3",
+    "rank-bm25==0.2.2",
+    "sentence-transformers>=3.0,<3.4",
+    "scikit-learn>=1.4,<1.6",
+    "matplotlib>=3.8,<3.10",
+    "PyYAML>=6.0,<6.1",
+    "pytest>=7.4,<8.4",
+]
+
+[project.optional-dependencies]
+# Needed only for scripts/download_toolret.py (fetching the real ToolRet
+# benchmark from the Hugging Face Hub). Not required for the toy pipeline.
+data = [
+    "datasets>=2.19,<3.1",
+    "huggingface_hub>=0.23,<0.27",
+    "pyarrow>=15,<18",
+]
+
+[project.scripts]
+tool-routing = "tool_routing.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

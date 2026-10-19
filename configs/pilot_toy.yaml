@@ -1,0 +1,22 @@
+# Toy fixture pilot config (no network / model download required besides
+# the embedding model itself). NOT a benchmark -- see docs/dataset.md.
+run_name: toy_smoke_test
+dataset: toy
+seed: 42
+
+pilot:
+  max_total_queries: 500 # toy fixture has far fewer; all are kept
+  dev_frac: 0.6
+  val_frac: 0.2
+
+catalog:
+  n_distractors: 2
+
+embedding:
+  model_name: sentence-transformers/all-MiniLM-L6-v2
+  device: cpu
+
+thresholds:
+  max_risk: 0.1
+
+output_dir: results/toy_smoke_test

@@ -1,0 +1,20 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+
+# Raw/downloaded datasets and models (never commit)
+data/raw/
+data/cache/
+data/.hf_cache/
+!data/fixtures/
+!data/fixtures/**
+
+# Large outputs
+results/
+!results/.gitkeep
+
+.DS_Store
