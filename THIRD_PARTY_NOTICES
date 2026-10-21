@@ -1,0 +1,25 @@
+Third-party notices
+===================
+
+CaMeL policy components (vendored closure)
+------------------------------------------
+Location: src/third_party/camel_policy/
+Upstream: https://github.com/google-research/camel-prompt-injection
+Commit:   f083b6b396399d3b3c7f2ddaf613a5945eaf32d8
+Copyright 2025 Google LLC
+License:  Apache License, Version 2.0 (full text at
+          src/third_party/camel_policy/LICENSE)
+
+Local modifications: mechanical package-path rewrites only
+(camel.capabilities -> third_party.camel_policy...); upstream logic,
+headers, and license text unmodified. Used for a policy-component
+comparison arm ("CaMeL released base-policy component with adapted
+capability inputs") — NOT a CaMeL reproduction. Record:
+docs/camel_vendor_record.md.
+
+Python dependencies (not vendored; installed via pip)
+----------------------------------------------------
+pydantic (MIT), plus the milestone-1 stack pinned in
+requirements-lock.txt. agentdojo and provider SDKs are required only
+by the throwaway smoke venv (/private/tmp/camel-smoke-venv) and are
+NOT part of this repository.

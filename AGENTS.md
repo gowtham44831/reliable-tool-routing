@@ -27,7 +27,26 @@ to your shell rc) before running `pip`, `python -m tool_routing.cli`, or
 
 ## Commands
 
-* Tests: `python -m pytest -q` (fast, no network, 41 tests as of writing).
+* Tests: `python -m pytest -q` (fast, no network, 74 tests as of writing).
+* Argument-verification dev eval (20 paired cases; methods schema, rule,
+  crossrule run locally; AI verifier needs ARGVERIFY_BASE_URL
+  [/API_KEY/MODEL], e.g. Ollama at http://localhost:11434/v1):
+  `python scripts/run_argverify_eval.py`. Case review doc:
+  `python scripts/make_case_review_doc.py`. Blinded human-review doc (5
+  cases, no labels): `python scripts/make_argverify_review_doc.py`.
+  Fixture: `src/tool_routing/argverify/fixtures/travel_cases.json` — keep
+  pair members together in any future split. The slot-level rule baseline
+  is frozen; cross-argument checks live in `cross_argument_baseline` and
+  are reported separately. Input contract: docs/argument_verification_evidence_inputs.md.
+* Blind labeling docs: `python scripts/make_labeling_doc.py --round 1`
+  writes `results/evaluation_audit/human_labeling/bounded_labeling_round<N>.md`
+  + a blank `responses/bounded_round<N>_responses.csv`;
+  validate a completed round with `python scripts/validate_review.py --round N`.
+  Never open `review/bounded_catalog_review_KEY_*.csv` during review.
+* Evaluation audit (reads pilot outputs read-only, a few seconds, no model):
+  `python scripts/audit_evaluation.py --config configs/pilot_toolret.yaml --pilot-dir results/toolret_pilot --out-dir results/evaluation_audit`.
+  Write-up in `docs/evaluation_audit.md`; if you re-run it, re-copy
+  `results/evaluation_audit/plots/*.png` to `docs/figures/`.
 * Toy end-to-end smoke test: `python -m tool_routing.cli smoke-test`.
 * Download real data: `python scripts/download_toolret.py --queries <subsets...>`
   (needs `pip install -e ".[data]"` and network access).
@@ -42,3 +61,9 @@ to your shell rc) before running `pip`, `python -m tool_routing.cli`, or
   small inline fixture -- avoid requiring real ToolRet data in tests.
 * Don't claim benchmark results from the toy fixture; it exists only for
   pipeline testing (see its module docstring).
+* Never overwrite `results/toolret_pilot/` (milestone-1 reference
+  outputs); use `--output-dir` for new runs.
+* The pilot test split is exploratory (it informed milestone 2). Do not
+  tune on it. `configs/reserved_confirmatory_query_ids.json` is the fresh
+  held-out pool; do not evaluate on it until the protocol is frozen.
+* Pin `embedding.revision` to a full 40-hex HF commit SHA in configs.

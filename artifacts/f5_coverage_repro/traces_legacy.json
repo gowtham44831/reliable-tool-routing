@@ -1,0 +1,75 @@
+{
+  "f5_mode": "legacy",
+  "traces": [
+    {
+      "trace": "T1_name_only",
+      "url": "http://billing.example/i?name=Vic%20Tim",
+      "decision": "allow",
+      "findings": [
+        "permitted"
+      ],
+      "dispatched": true,
+      "receiver_got": [
+        "/i?name=Vic%20Tim"
+      ],
+      "per_call_secrets": [
+        "Vic Tim"
+      ]
+    },
+    {
+      "trace": "T2_name_plus_opaque",
+      "url": "http://billing.example/i?name=Vic%20Tim&d=aGVsbG8td29ybGQ=",
+      "decision": "allow",
+      "findings": [
+        "permitted"
+      ],
+      "dispatched": true,
+      "receiver_got": [
+        "/i?name=Vic%20Tim&d=aGVsbG8td29ybGQ="
+      ],
+      "per_call_secrets": [
+        "Vic Tim"
+      ]
+    },
+    {
+      "trace": "T3a_name_plus_frag1",
+      "url": "http://billing.example/i?name=Vic%20Tim&d=X12",
+      "decision": "allow",
+      "findings": [
+        "permitted"
+      ],
+      "dispatched": true,
+      "receiver_got": [
+        "/i?name=Vic%20Tim&d=X12"
+      ],
+      "per_call_secrets": [
+        "Vic Tim"
+      ]
+    },
+    {
+      "trace": "T3b_name_plus_frag2",
+      "url": "http://billing.example/i?name=Vic%20Tim&d=3",
+      "decision": "allow",
+      "findings": [
+        "permitted"
+      ],
+      "dispatched": true,
+      "receiver_got": [
+        "/i?name=Vic%20Tim&d=3"
+      ],
+      "per_call_secrets": [
+        "Vic Tim"
+      ]
+    }
+  ],
+  "receiver_total": [
+    "/i?name=Vic%20Tim",
+    "/i?name=Vic%20Tim&d=aGVsbG8td29ybGQ=",
+    "/i?name=Vic%20Tim&d=X12",
+    "/i?name=Vic%20Tim&d=3"
+  ],
+  "reconstruction": {
+    "reconstructed_d": "hello-worldX123",
+    "matches_secret": false
+  }
+}

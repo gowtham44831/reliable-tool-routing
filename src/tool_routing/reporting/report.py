@@ -71,7 +71,7 @@ def render_markdown_report(
     lines.append("## Results (measured)")
     lines.append("")
     lines.append(
-        "| Method | Scenario | Policy | Coverage | Top-1 Acc (answerable, accepted) | "
+        "| Method | Scenario | Policy | Coverage | Top-1 agreement with known labels (accepted, not audited-unanswerable) | "
         "Selective Risk | False-action rate (audited unanswerable) | "
         "Abstention rate (audited answerable) | p50 latency (ms) | p95 latency (ms) |"
     )

@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Reliable Tool Routing — Egress Gateway Showcase"
+authors:
+  - family-names: "Reddi"
+    given-names: "Sai Gowtham"
+version: 1.0.0
+license: MIT
+# repository-code: TBD on publication
+abstract: >
+  A bounded laboratory evaluation of a pre-dispatch egress gateway for
+  LLM tool calls: host filtering, bounded payload decoding, field-level
+  authorization against permission records, and identity-bound task
+  context — plus a CaMeL policy-component compatibility comparison and
+  a claim-to-evidence methodology. Fictional data, mock receivers, and
+  a local model only; not a production system or a novel security
+  mechanism.
+date-released: 2026-10-20

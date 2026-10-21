@@ -18,6 +18,7 @@ dependencies = [
     "scikit-learn>=1.4,<1.6",
     "matplotlib>=3.8,<3.10",
     "PyYAML>=6.0,<6.1",
+    "pydantic>=2.11,<2.12",  # vendored CaMeL policy closure
     "pytest>=7.4,<8.4",
 ]
 

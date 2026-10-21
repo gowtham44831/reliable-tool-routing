@@ -1,0 +1,20 @@
+{
+  "docs/camel_policy_assessment.md": "57dd474aa297cdc5dee3aba218975528bf14cac2202fd03293ba59699e588ea1",
+  "docs/camel_vendor_record.md": "4b4f97ccc04fd254b1ed89803c4b368a4686eab47fd2c95f93f551620827c8e0",
+  "results/camel_component_eval/traces.json": "2218d7f2ad6de176403603f34057f02854b82731e6ea77a7820aa5d402f4d36e",
+  "scripts/run_camel_component_eval.py": "14eb6109208b31a6cf87ffb4b826f3e90d623ffcfdf6807bd3287d773bd4fd56",
+  "src/third_party/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "src/third_party/camel_policy/LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+  "src/third_party/camel_policy/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "src/third_party/camel_policy/capabilities/__init__.py": "11d1567103849c8d500805a365d2addbbe765e986cbccadcb5606ef616cf9ae6",
+  "src/third_party/camel_policy/capabilities/capabilities.py": "7b13338cb87dff6be17ce1cebc1daf14403f59b4440190ca09d60bcbd10bbd70",
+  "src/third_party/camel_policy/capabilities/readers.py": "2a2fa5fac21f22f7904b687e6452209b6cbf8ff339d925f15c0ea829716b1aa0",
+  "src/third_party/camel_policy/capabilities/sources.py": "38ed50f59cb67bf3cad13226e03724e48f0d637a5b2e6569bf95caa9c674aa91",
+  "src/third_party/camel_policy/capabilities/utils.py": "5cdf23f18fee9621f1013fd490caa39ce1597125d7ddf99618d49024ce35068c",
+  "src/third_party/camel_policy/conditional_cache.py": "b4056935ccaad83d05075b98c08a189741b36aecaeab6b5585afd02778858e51",
+  "src/third_party/camel_policy/interpreter/__init__.py": "84328a9f0b961888a87afdcad635aebfea4b73ba3f38a7fbd4e623fea5b2392c",
+  "src/third_party/camel_policy/interpreter/op_protocols.py": "8125de3e70342444dd89d13f3f81ad3b0478dbeb2573ecac7812e1dd093e259b",
+  "src/third_party/camel_policy/interpreter/value.py": "aff9c45bf9e7c3409f72acd933f8969339d8ae545190e59580cded891ec595c5",
+  "src/third_party/camel_policy/security_policy.py": "0b30be9ea608ab8aa27654abcccf0a484bab50f0f6cd55929edbb6b4bc713117",
+  "src/tool_routing/argverify/camel_policy_arm.py": "64a2fe79e48c4dd6f8ecc5fd0d90b5fb1176122d36428715f59356afdd5278cc"
+}

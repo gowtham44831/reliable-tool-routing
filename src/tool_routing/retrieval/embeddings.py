@@ -2,8 +2,10 @@
 
 Uses a configurable pretrained sentence-transformer (no fine-tuning),
 normalized embeddings, and exact cosine similarity (dot product of unit
-vectors). Tool embeddings are cached **per tool** (keyed by the model's
-resolved revision and a hash of that tool's own serialized content), not
+vectors). Tool embeddings are cached **per tool** (keyed by a fingerprint
+of every vector-affecting setting -- model name, immutable commit SHA,
+doc prefix, normalization, max sequence length, sentence-transformers
+version -- plus a hash of that tool's own serialized content), not
 per catalog -- many catalogs in this project share most of their tools
 (e.g. every query in a source subset shares the same "original" pool, and
 "known_removed"/"distractors_added" variants only change a handful of
@@ -16,6 +18,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
+import sys
 import time
 from collections import OrderedDict
 from dataclasses import dataclass
@@ -27,10 +31,23 @@ from tool_routing.data.schema import Tool
 from tool_routing.retrieval.base import BaseRetriever, RankedResult
 
 DEFAULT_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+_SHA_RE = re.compile(r"[0-9a-f]{40}")
 
 
-def _tool_content_key(tool: Tool, doc_prefix: str) -> str:
+def is_immutable_revision(revision: str | None) -> bool:
+    """True only for a full 40-hex commit SHA (branch/tag names can move)."""
+    return bool(revision) and bool(_SHA_RE.fullmatch(revision))
+
+
+def embedding_settings_fingerprint(settings: dict) -> str:
+    """Stable hash of every setting that changes a tool vector."""
+    return hashlib.sha256(json.dumps(settings, sort_keys=True, default=str).encode()).hexdigest()
+
+
+def _tool_content_key(tool: Tool, doc_prefix: str, settings_fingerprint: str = "") -> str:
     h = hashlib.sha256()
+    h.update(settings_fingerprint.encode())
+    h.update(b"\x00")
     h.update(tool.tool_id.encode())
     h.update(b"\x00")
     h.update((doc_prefix + tool.serialized_text()).encode())
@@ -73,6 +90,7 @@ class EmbeddingRetriever(BaseRetriever):
         query_prefix: str = "",
         doc_prefix: str = "",
         batch_size: int = 32,
+        revision: str | None = None,
     ) -> None:
         self.model_name = model_name
         self.device = device
@@ -80,8 +98,10 @@ class EmbeddingRetriever(BaseRetriever):
         self.query_prefix = query_prefix
         self.doc_prefix = doc_prefix
         self.batch_size = batch_size
+        self.requested_revision = revision
         self._model = None
         self._model_revision: str | None = None
+        self._settings_fingerprint = ""
         self._tool_vectors: dict[str, np.ndarray] = {}  # content_key -> vector
         self._cache_loaded = False
         self._n_new_since_load = 0
@@ -91,12 +111,43 @@ class EmbeddingRetriever(BaseRetriever):
         if self._model is None:
             from sentence_transformers import SentenceTransformer
 
-            self._model = SentenceTransformer(self.model_name, device=self.device)
+            # Resolve to an immutable commit SHA *before* loading, and load
+            # exactly that SHA, so the recorded revision is the one whose
+            # weights were actually used (not just whatever "main" points
+            # to on the Hub at run time).
             self._model_revision = self._resolve_revision()
+            load_rev = self._model_revision if is_immutable_revision(self._model_revision) else None
+            if load_rev is None:
+                print(
+                    f"[warn] embedding model {self.model_name!r} revision is not an immutable "
+                    f"commit SHA ({self._model_revision!r}); embeddings are not reproducibly pinned.",
+                    file=sys.stderr,
+                )
+            self._model = SentenceTransformer(self.model_name, device=self.device, revision=load_rev)
+            self._settings_fingerprint = embedding_settings_fingerprint(self.settings())
             self._load_cache()
         return self._model
 
+    def settings(self) -> dict:
+        """Every setting that affects a cached tool vector."""
+        try:
+            from importlib.metadata import version
+
+            st_version = version("sentence-transformers")
+        except Exception:
+            st_version = "unknown"
+        return {
+            "model_name": self.model_name,
+            "model_revision": self._model_revision,
+            "doc_prefix": self.doc_prefix,
+            "normalize_embeddings": True,
+            "max_seq_length": getattr(self._model, "max_seq_length", None),
+            "sentence_transformers_version": st_version,
+        }
+
     def _resolve_revision(self) -> str:
+        if self.requested_revision:
+            return self.requested_revision
         try:
             from huggingface_hub import HfApi
 
@@ -149,6 +200,9 @@ class EmbeddingRetriever(BaseRetriever):
                     "model_name": self.model_name,
                     "model_revision": self._model_revision,
                     "n_tools_cached": len(keys),
+                    "model_revision_is_immutable_sha": is_immutable_revision(self._model_revision),
+                    "settings": self.settings(),
+                    "settings_fingerprint": self._settings_fingerprint,
                 },
                 indent=2,
             )
@@ -159,7 +213,7 @@ class EmbeddingRetriever(BaseRetriever):
         """Ensure every tool in ``tools`` has a cached vector. Returns
         seconds spent encoding (0.0 if everything was already cached)."""
         self._get_model()
-        keys = [_tool_content_key(t, self.doc_prefix) for t in tools]
+        keys = [_tool_content_key(t, self.doc_prefix, self._settings_fingerprint) for t in tools]
         missing = [(k, t) for k, t in zip(keys, tools) if k not in self._tool_vectors]
         if not missing:
             return 0.0
@@ -185,7 +239,7 @@ class EmbeddingRetriever(BaseRetriever):
             return 0.0
 
         elapsed = self._get_or_encode_tool_vectors(tools)
-        keys = [_tool_content_key(t, self.doc_prefix) for t in tools]
+        keys = [_tool_content_key(t, self.doc_prefix, self._settings_fingerprint) for t in tools]
         embeddings = np.stack([self._tool_vectors[k] for k in keys])
         self._indexes[catalog_id] = _CatalogIndex(tool_ids=tool_ids, embeddings=embeddings)
         return elapsed

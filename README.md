@@ -1,5 +1,9 @@
 # Reliable Neural Tool Selection When Available Tools Change
 
+> **Current project status, standing caveats, and all later milestones
+> (argument verification, security extension): see
+> [`docs/STATUS.md`](docs/STATUS.md).**
+
 **Research question:** Can a compact neural approach reduce incorrect tool
 selections when tools are added or removed, while maintaining useful
 request coverage?
@@ -150,7 +154,10 @@ dataset/baseline/evaluation pipeline working first.
 python -m pytest -q
 ```
 
-41 tests, all against the toy fixture and small inline fixtures (no
+61 tests (41 from milestone 1, 20 added for the milestone-2 audit:
+Wilson intervals, review-sample stratification, catalog invariants,
+threshold-selection traces, leakage checks, embedding cache keys), all
+against the toy fixture and small inline fixtures (no
 network, no model download), covering: relevance-label mapping, dup
 IDs/missing fields/dangling refs/conflicting-label validation, "all known
 valid tools removed", "genuine additions without duplicate IDs",
@@ -165,8 +172,81 @@ writeup, and the project handoff summary below (also in the task
 conversation) for: what was implemented, exact commands run, actual pilot
 findings on real ToolRet data, an error-analysis sample, what's
 unverified/blocked (no human review pass yet; no official full-corpus
-evaluation yet), and the next experiment justified by observed failures
-(baseline top-1 accuracy of ~43-52% on the original catalog means
-selective-risk-based abstention collapses coverage to near zero at
-reasonable risk targets -- motivating a trained/calibrated approach as
-the next step, not yet attempted here).
+evaluation yet), and the next experiment justified by observed failures.
+
+**Correction (milestone 2):** an earlier version of this paragraph said
+"baseline top-1 accuracy of ~43-52%". The measured test-split values in
+`results/toolret_pilot/metrics.json` are **43/100 (embedding) and 48/100
+(BM25)** agreement with the known relevance labels on the `original`
+catalog, i.e. 43-48%. 52% is BM25's test *selective risk* (52/100), not
+an accuracy. See `docs/evaluation_audit.md` for the reconciliation,
+per-split numbers with confidence intervals, and the diagnosis of why the
+threshold policies reach (near-)zero test coverage.
+
+## Milestone 2: evaluation audit
+
+```bash
+python scripts/audit_evaluation.py --config configs/pilot_toolret.yaml \
+    --pilot-dir results/toolret_pilot --out-dir results/evaluation_audit
+```
+
+Reads the milestone-1 pilot outputs read-only (hash-verified before and
+after) and writes exact count tables, Wilson intervals, paired bootstrap
+comparisons, score/margin plots, catalog/leakage checks, and human-review
+CSVs. Write-up: `docs/evaluation_audit.md`; reviewer instructions:
+`docs/review_workflow.md`.
+
+## Showcase release — egress gateway (milestones 3+)
+
+The current supported path is the **`url_fetch` egress gateway,
+`url-gw-1.1` (strict F5 by default)** plus `planner-adapter-1.3`
+context binding. Earlier `disclosure.py`/`min_disclosure.py`
+implementations are frozen predecessors; `f5_mode="legacy"` keeps
+url-gw-1.0 behavior for reproduction. Exploratory and closed
+directions live under `archive/` (labeled in `archive/README.md`).
+Frozen experiment artifacts remain under `results/` — never
+overwrite them.
+
+### Quick start
+
+```bash
+python3.12 -m venv .venv && source .venv/bin/activate
+pip install -e .            # core; ".[data]" only for ToolRet download
+python -m pytest -q         # 181 core (186 with .[data])
+python scripts/demo_showcase.py   # scripted 3-scene demo ->
+                                  # results/demo_showcase/traces.json
+```
+
+The demo uses **scripted calls** on fictional data (unauthorized
+disclosure blocked, authorized delivery permitted, the
+sibling-carrier defect before/after the F5 fix). Live-model runs
+(`scripts/run_multistep_pilot.py --v2`) additionally need a local
+Ollama `qwen3:14b` endpoint; no paid APIs are used anywhere.
+
+### Dependencies and licensing
+
+- This repository: **MIT** (`LICENSE`; `pyproject.toml`).
+- Vendored third-party code: `src/third_party/camel_policy/`
+  contains a dependency closure of the released CaMeL policy
+  components (upstream commit `f083b6b`), **Apache-2.0** — upstream
+  license and notices preserved; modifications and rationale in
+  `docs/camel_vendor_record.md`. It is used for a *component*
+  comparison only — not a CaMeL reproduction.
+- Runtime deps: `pydantic` (vendored CaMeL closure), plus the
+  milestone-1 stack pinned in `requirements-lock.txt`.
+
+### AI assistance
+
+This project was developed with AI coding assistance (Devin,
+Cognition) for implementation, evaluation harness code, and
+documentation drafting. All security-relevant claims in
+`docs/`/`results/` trace to saved artifacts; exploratory and
+corrected work is labeled per milestone in `docs/STATUS.md`, and the
+evidence-to-claim mapping is in `docs/claim_to_evidence.md`.
+
+### Reports
+
+- Technical report + reproduction commands: `docs/technical_report.md`
+- Publication-pitch abstract: `docs/publication_abstract.md`
+- Public-release checklist: `docs/release_checklist.md`
+- Full milestone log: `docs/STATUS.md`

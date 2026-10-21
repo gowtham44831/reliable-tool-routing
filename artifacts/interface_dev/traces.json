@@ -1,0 +1,130 @@
+[
+  {
+    "task": "D1",
+    "contract": "A_text_schema",
+    "action": "fetch",
+    "valid": false,
+    "raw": "{\"tool\": \"url_fetch_struct\", \"params\": {\"base_url\": \"http://docs.example/index\", \"params\": {}}}",
+    "turn2": null
+  },
+  {
+    "task": "D2",
+    "contract": "A_text_schema",
+    "action": "fetch",
+    "valid": false,
+    "raw": "{\"tool\": \"url_fetch_struct\", \"params\": {\"base_url\": \"http://docs.example/report\", \"params\": {\"city\": \"Paris\", \"year\": \"2026\"}}}",
+    "turn2": null
+  },
+  {
+    "task": "D3",
+    "contract": "A_text_schema",
+    "action": "fetch",
+    "valid": true,
+    "raw": "{\n  \"tool\": \"url_fetch_struct\",\n  \"base_url\": \"http://status.example/ping\",\n  \"params\": {\n    \"name\": \"Ana Rua\",\n    \"ticket\": \"T-42\"\n  }\n}",
+    "turn2": null
+  },
+  {
+    "task": "D4",
+    "contract": "A_text_schema",
+    "action": "respond",
+    "valid": true,
+    "raw": "{\"tool\": \"respond\", \"answer\": \"The retrieved note states that the library opens at 9am.\"}",
+    "turn2": null
+  },
+  {
+    "task": "D5",
+    "contract": "A_text_schema",
+    "action": "fetch",
+    "valid": true,
+    "raw": "{\"tool\": \"url_fetch_struct\", \"params\": {\"base_url\": \"http://docs.example/status\", \"params\": {\"id\": \"S-7\"}}}",
+    "turn2": {
+      "action": "respond",
+      "detail": {
+        "tool": "respond",
+        "params": {
+          "answer": "The status for ID S-7 is green."
+        }
+      },
+      "raw": "{\"tool\": \"respond\", \"params\": {\"answer\": \"The status for ID S-7 is green.\"}}"
+    }
+  },
+  {
+    "task": "D6",
+    "contract": "A_text_schema",
+    "action": "fetch",
+    "valid": true,
+    "raw": "{\"tool\":\"url_fetch_struct\",\"base_url\":\"http://docs.example/report\",\"params\":{\"x\":1}}",
+    "turn2": null
+  },
+  {
+    "task": "D7",
+    "contract": "A_text_schema",
+    "action": "fetch",
+    "valid": false,
+    "raw": "{\"tool\": \"url_fetch_struct\", \"params\": {\"base_url\": \"https://api.example.net/v1/status\", \"params\": {\"verbose\": true}}}",
+    "turn2": null
+  },
+  {
+    "task": "D1",
+    "contract": "B_example_contract",
+    "action": "fetch",
+    "valid": true,
+    "raw": "{\"tool\":\"url_fetch_struct\",\"base_url\":\"http://docs.example/index\",\"params\":{}}",
+    "turn2": null
+  },
+  {
+    "task": "D2",
+    "contract": "B_example_contract",
+    "action": "fetch",
+    "valid": true,
+    "raw": "{\"tool\":\"url_fetch_struct\",\"base_url\":\"http://docs.example/report\",\"params\":{\"city\":\"Paris\",\"year\":\"2026\"}}",
+    "turn2": null
+  },
+  {
+    "task": "D3",
+    "contract": "B_example_contract",
+    "action": "fetch",
+    "valid": true,
+    "raw": "{\"tool\":\"url_fetch_struct\",\"base_url\":\"http://status.example/ping\",\"params\":{\"name\":\"Ana Rua\",\"ticket\":\"T-42\"}}",
+    "turn2": null
+  },
+  {
+    "task": "D4",
+    "contract": "B_example_contract",
+    "action": "respond",
+    "valid": true,
+    "raw": "{\"tool\":\"respond\",\"answer\":\"The retrieved note states that the library opens at 9am.\"}",
+    "turn2": null
+  },
+  {
+    "task": "D5",
+    "contract": "B_example_contract",
+    "action": "fetch",
+    "valid": true,
+    "raw": "{\"tool\":\"url_fetch_struct\",\"base_url\":\"http://docs.example/status\",\"params\":{\"id\":\"S-7\"}}",
+    "turn2": {
+      "action": "respond",
+      "detail": {
+        "tool": "respond",
+        "answer": "The status for ID S-7 is green."
+      },
+      "raw": "{\"tool\":\"respond\",\"answer\":\"The status for ID S-7 is green.\"}"
+    }
+  },
+  {
+    "task": "D6",
+    "contract": "B_example_contract",
+    "action": "fetch",
+    "valid": true,
+    "raw": "{\"tool\":\"url_fetch_struct\",\"base_url\":\"http://docs.example/report\",\"params\":{\"x\":1}}",
+    "turn2": null
+  },
+  {
+    "task": "D7",
+    "contract": "B_example_contract",
+    "action": "fetch",
+    "valid": true,
+    "raw": "{\"tool\":\"url_fetch_struct\",\"base_url\":\"https://api.example.net/v1/status\",\"params\":{\"verbose\":true}}",
+    "turn2": null
+  }
+]

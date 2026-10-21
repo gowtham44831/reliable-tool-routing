@@ -98,7 +98,10 @@ reasoning):
 This is **not verified per-query** -- it is entirely plausible some
 "single-tool" subsets still contain a few composite requests, and vice
 versa. Treat the single/multi-tool split as a documented limitation, not a
-ground truth.
+ground truth. In the five pilot subsets, 362/1,895 requests (19%) carry
+2+ labels, and the metrics implicitly treat them as alternatives. A
+stratified 100-request human-review sheet for this question is described
+in `docs/evaluation_audit.md` section 1.
 
 ### Known limitations of the labels
 

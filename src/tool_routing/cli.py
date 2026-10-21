@@ -190,6 +190,7 @@ def _run_pipeline(cfg: dict) -> None:
             model_name=emb_cfg.get("model_name", "sentence-transformers/all-MiniLM-L6-v2"),
             device=emb_cfg.get("device", "cpu"),
             cache_dir=emb_cfg.get("cache_dir", "data/cache/embeddings"),
+            revision=emb_cfg.get("revision"),
         ),
     }
 

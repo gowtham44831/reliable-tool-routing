@@ -27,6 +27,10 @@ catalog:
 
 embedding:
   model_name: sentence-transformers/all-MiniLM-L6-v2
+  # Immutable HF commit SHA. Same revision recorded in the milestone-1
+  # pilot's embedding-cache metadata (and the only local snapshot present
+  # when that run happened).
+  revision: 1110a243fdf4706b3f48f1d95db1a4f5529b4d41
   device: cpu
 
 thresholds:

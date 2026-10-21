@@ -1,0 +1,63 @@
+{
+  "f5_mode": "strict",
+  "traces": [
+    {
+      "trace": "T1_name_only",
+      "url": "http://billing.example/i?name=Vic%20Tim",
+      "decision": "allow",
+      "findings": [
+        "permitted"
+      ],
+      "dispatched": true,
+      "receiver_got": [
+        "/i?name=Vic%20Tim"
+      ],
+      "per_call_secrets": [
+        "Vic Tim"
+      ]
+    },
+    {
+      "trace": "T2_name_plus_opaque",
+      "url": "http://billing.example/i?name=Vic%20Tim&d=aGVsbG8td29ybGQ=",
+      "decision": "block",
+      "findings": [
+        "permitted",
+        "unaccounted_payload"
+      ],
+      "dispatched": false,
+      "receiver_got": [],
+      "per_call_secrets": []
+    },
+    {
+      "trace": "T3a_name_plus_frag1",
+      "url": "http://billing.example/i?name=Vic%20Tim&d=X12",
+      "decision": "block",
+      "findings": [
+        "permitted",
+        "unaccounted_payload"
+      ],
+      "dispatched": false,
+      "receiver_got": [],
+      "per_call_secrets": []
+    },
+    {
+      "trace": "T3b_name_plus_frag2",
+      "url": "http://billing.example/i?name=Vic%20Tim&d=3",
+      "decision": "block",
+      "findings": [
+        "permitted",
+        "unaccounted_payload"
+      ],
+      "dispatched": false,
+      "receiver_got": [],
+      "per_call_secrets": []
+    }
+  ],
+  "receiver_total": [
+    "/i?name=Vic%20Tim"
+  ],
+  "reconstruction": {
+    "reconstructed_d": "",
+    "matches_secret": false
+  }
+}
