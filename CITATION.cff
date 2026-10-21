@@ -6,7 +6,7 @@ authors:
     given-names: "Sai Gowtham"
 version: 1.0.0
 license: MIT
-# repository-code: TBD on publication
+repository-code: "https://github.com/gowtham44831/reliable-tool-routing"
 abstract: >
   A bounded laboratory evaluation of a pre-dispatch egress gateway for
   LLM tool calls: host filtering, bounded payload decoding, field-level
